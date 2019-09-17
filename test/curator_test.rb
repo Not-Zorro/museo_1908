@@ -126,4 +126,18 @@ class CuratorTest < Minitest::Test
     assert_equal [@photo_2, @photo_3, @photo_4], @curator.photographs_taken_by_artist_from("United States")
     assert_equal [], @curator.photographs_taken_by_artist_from("Argentina")
   end
+
+  def test_load_photographs
+    @curator.load_photographs('./data/photographs.csv')
+    assert_equal 4, @curator.photographs.length
+    assert_equal '1', @curator.photographs[0].id
+    assert_equal "Rue Mouffetard, Paris (Boy with Bottles)", @curator.photographs[0].name
+  end
+
+  def test_load_artists
+    @curator.load_artists('./data/artists.csv')
+    assert_equal 6, @curator.artists.length
+    assert_equal '1', @curator.artists[0].id
+    assert_equal "Henri Cartier-Bresson", @curator.artists[0].name
+  end
 end

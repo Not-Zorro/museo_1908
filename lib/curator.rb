@@ -1,3 +1,5 @@
+require 'csv'
+
 class Curator
   attr_reader :photographs, :artists
 
@@ -49,5 +51,30 @@ class Curator
     matching_artists.map do |artist|
       find_photographs_by_artist(artist)
     end.flatten
+  end
+
+  def load_photographs(file_path)
+    CSV.foreach(file_path, headers: true) do |row|
+      conv_keys_to_sym = {
+        id: row[0],
+        name: row[1],
+        artist_id: row[2],
+        year: row[3]
+      }
+      @photographs << Photograph.new(conv_keys_to_sym)
+    end
+  end
+
+  def load_artists(file_path)
+    CSV.foreach(file_path, headers: true) do |row|
+      conv_keys_to_sym = {
+        id: row[0],
+        name: row[1],
+        born: row[2],
+        died: row[3],
+        country: row[4]
+      }
+      @artists << Artist.new(conv_keys_to_sym)
+    end
   end
 end
