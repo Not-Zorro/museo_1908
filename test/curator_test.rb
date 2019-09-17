@@ -140,4 +140,21 @@ class CuratorTest < Minitest::Test
     assert_equal '1', @curator.artists[0].id
     assert_equal "Henri Cartier-Bresson", @curator.artists[0].name
   end
+
+  def test_photographs_taken_between
+    @curator.load_artists('./data/artists.csv')
+    @curator.load_photographs('./data/photographs.csv')
+    assert_equal [@curator.photographs[0], @curator.photographs[3]], @curator.photographs_taken_between(1950..1965)
+  end
+
+  def test_artists_photographs_by_age
+    @curator.load_artists('./data/artists.csv')
+    @curator.load_photographs('./data/photographs.csv')
+    diane_arbus = @curator.find_artist_by_id("3")
+    expected = {
+      44=>"Identical Twins, Roselle, New Jersey",
+      39=>"Child with Toy Hand Grenade in Central Park"
+      }
+    assert_equal expected, @curator.artists_photographs_by_age(diane_arbus)
+  end
 end

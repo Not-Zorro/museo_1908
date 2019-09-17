@@ -54,27 +54,29 @@ class Curator
   end
 
   def load_photographs(file_path)
-    CSV.foreach(file_path, headers: true) do |row|
-      conv_keys_to_sym = {
-        id: row[0],
-        name: row[1],
-        artist_id: row[2],
-        year: row[3]
-      }
-      @photographs << Photograph.new(conv_keys_to_sym)
+    CSV.foreach(file_path, headers: true, header_converters: :symbol) do |row|
+      @photographs << Photograph.new(row)
     end
   end
 
   def load_artists(file_path)
-    CSV.foreach(file_path, headers: true) do |row|
-      conv_keys_to_sym = {
-        id: row[0],
-        name: row[1],
-        born: row[2],
-        died: row[3],
-        country: row[4]
-      }
-      @artists << Artist.new(conv_keys_to_sym)
+    CSV.foreach(file_path, headers: true, header_converters: :symbol) do |row|
+      @artists << Artist.new(row)
     end
+  end
+
+  def photographs_taken_between(range)
+    @photographs.find_all do |photo|
+      photo if range.include?(photo.year.to_i)
+    end
+  end
+
+  def artists_photographs_by_age(artist)
+    age_hash = Hash.new
+    find_photographs_by_artist(artist).each do |photograph|
+      age_for_painting = photograph.year.to_i - artist.born.to_i
+      age_hash[age_for_painting] = photograph.name
+    end
+    age_hash
   end
 end
