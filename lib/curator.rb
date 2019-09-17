@@ -37,10 +37,17 @@ class Curator
     end
 
     artists_more_than_one = []
-    
+
     artist_hash.each do |artist, photos|
       artists_more_than_one << artist if photos.length > 1
     end
     artists_more_than_one
+  end
+
+  def photographs_taken_by_artist_from(country)
+    matching_artists = @artists.find_all{|artist| artist.country == country}
+    matching_artists.map do |artist|
+      find_photographs_by_artist(artist)
+    end.flatten
   end
 end
